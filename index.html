@@ -6,52 +6,70 @@
 <title>Review M J THACKER & Co</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f6; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-  .container { background: #fff; padding: 30px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; box-sizing: border-box; }
+  .container { background: #fff; padding: 30px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; box-sizing: border-box; position: relative; overflow: hidden; }
+  
+  /* Main View */
+  #mainView { transition: opacity 0.3s ease; }
   h1 { font-size: 22px; color: #333; margin-bottom: 5px; }
   p.subtitle { color: #666; font-size: 14px; margin-bottom: 20px; }
   .stars { font-size: 32px; color: #FFD700; margin-bottom: 20px; cursor: default; }
-  textarea { width: 100%; height: 120px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; color: #444; resize: none; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; line-height: 1.4; }
+  textarea { width: 100%; height: 140px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; color: #444; resize: none; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; line-height: 1.4; }
   textarea:focus { outline: none; border-color: #007bff; }
   .cta { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 15px; }
+  
+  /* Buttons */
   button { background-color: #4285F4; color: white; border: none; padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; width: 100%; cursor: pointer; transition: background 0.3s; }
   button:hover { background-color: #3367D6; }
-  #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 12px; position: fixed; z-index: 1; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 14px; }
-  #toast.show { visibility: visible; -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-  @-webkit-keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-  @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-  @-webkit-keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-  @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+  .secondary-btn { background-color: #34A853; margin-top: 15px; }
+  .secondary-btn:hover { background-color: #2b8c45; }
+
+  /* Instruction Modal */
+  #instructionModal { display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; padding: 20px 0; }
+  .icon-check { font-size: 48px; color: #34A853; margin-bottom: 10px; }
+  .modal-title { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 15px; }
+  .instruction-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: left; width: 100%; box-sizing: border-box; }
+  .instruction-step { font-size: 15px; color: #444; margin-bottom: 10px; line-height: 1.4; }
+  .instruction-step span { font-weight: bold; color: #000; }
+  .highlight { background-color: #e8f0fe; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #1a73e8; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>M J THACKER & Co</h1>
-  <p class="subtitle">Chartered Accountants</p>
-  
-  <div class="stars">★★★★★</div>
-  
-  <textarea id="reviewText"></textarea>
-  
-  <p class="cta">Tap below to submit your review in 10 seconds</p>
-  
-  <button onclick="copyAndRedirect()">Submit on Google</button>
+  <div id="mainView">
+    <h1>M J THACKER & Co</h1>
+    <p class="subtitle">Chartered Accountants</p>
+    <div class="stars">★★★★★</div>
+    <textarea id="reviewText"></textarea>
+    <p class="cta">Review ready! Tap below to continue.</p>
+    <button onclick="copyAndShowInstructions()">Copy Review & Next Step</button>
+  </div>
+
+  <div id="instructionModal">
+    <div class="icon-check">✓</div>
+    <div class="modal-title">Review Copied!</div>
+    <div class="instruction-box">
+      <div class="instruction-step"><span>Step 1:</span> Click the green button below to open Google.</div>
+      <div class="instruction-step"><span>Step 2:</span> Long-press the blank text box and select <span class="highlight">Paste</span>.</div>
+      <div class="instruction-step"><span>Step 3:</span> Select 5 stars and tap Post!</div>
+    </div>
+    <button class="secondary-btn" onclick="openGoogle()">Open Google & Paste</button>
+  </div>
 </div>
 
-<div id="toast">Review copied! Redirecting... Please paste on Google.</div>
-
 <script>
+  // Array of 100 SEO-friendly reviews for a CA Firm
   const reviews = [
     "Excellent professional service by a highly knowledgeable Chartered Accountant. Very responsive, reliable, and helped me with tax compliance efficiently. Highly recommended for GST and income tax.",
-    "M J Thacker & Co provides outstanding financial advisory services. Their team is meticulous, proactive, and makes complex corporate tax filing look easy. Highly recommend their services.",
+    "M J Thacker & Co provides outstanding financial advisory services. Their team is meticulous, proactive, and makes complex corporate tax filing look easy.",
     "I have been consulting them for my GST returns and company audits. Extremely professional, timely, and they offer great strategic advice for business growth. 5 stars!",
     "One of the best CA firms I've worked with. They handled my income tax assessment flawlessly. Very transparent, ethical, and prompt with their responses.",
-    "Highly knowledgeable team for all compliance and ROC matters. M J Thacker & Co ensures all my business taxes are filed well before deadlines, saving us from penalties.",
+    "Highly knowledgeable team for all compliance and ROC matters. M J Thacker & Co ensures all my business taxes are filed well before deadlines.",
     "Fantastic experience! They simplified my personal tax planning and investment declarations. A very trustworthy and accessible Chartered Accountant.",
     "If you need a reliable CA for business registration and GST compliance, look no further. Quick turnaround time and highly professional behavior.",
     "The depth of knowledge they have regarding Ind AS and statutory audits is impressive. Very structured approach to financial reporting.",
     "Extremely satisfied with their tax advisory. They took the time to explain the deductions and optimized my tax liabilities perfectly. Great service!",
-    "A highly dependable CA firm. Their expertise in handling complex corporate tax issues and GST litigation is unmatched. Thank you, M J Thacker & Co!",
+    "A highly dependable CA firm. Their expertise in handling complex corporate tax issues and GST litigation is unmatched. Thank you!",
     "Prompt, precise, and professional. They have been managing my firm's accounting and tax compliances for years without a single glitch.",
     "Great advisory on capital gains tax and real estate transactions. Their precise guidance saved me a lot of money and hassle.",
     "Very responsive and helpful team. M J Thacker & Co handles our monthly TDS and GST compliances with zero errors. Highly recommended for startups.",
@@ -71,34 +89,101 @@
     "Their advisory on business restructuring and valuation was eye-opening. Highly skilled professionals with deep financial acumen.",
     "Trustworthy, efficient, and highly knowledgeable. I recommend M J Thacker & Co to any business looking for a long-term financial partner.",
     "They handle our payroll compliances, PF, and professional tax seamlessly. It allows us to focus entirely on our core business operations.",
-    "Exceptional service! They are very patient in explaining complex tax jargon to non-finance people. A 5-star CA firm without a doubt."
+    "Exceptional service! They are very patient in explaining complex tax jargon to non-finance people. A 5-star CA firm without a doubt.",
+    "Highly recommend their Virtual CFO services. M J Thacker & Co transformed our cash flow management and budgeting processes completely.",
+    "The team is brilliant at handling Transfer Pricing audits. Their documentation and presentation to the tax authorities were flawless.",
+    "If you want peace of mind during tax season, this is the firm to go to. They handled my complex capital gains from crypto and stocks perfectly.",
+    "Great support for MSME registration and getting government subsidies. They are very well-versed with benefits available to small businesses.",
+    "Their internal audit team is fantastic. They identified several revenue leakages in our operations and helped us plug them immediately.",
+    "M J Thacker & Co is our go-to firm for all international taxation matters. Their advice on DTAA and foreign tax credits is spot on.",
+    "Very efficient handling of our Trust and NGO compliances. They manage our FCRA, 12A, and 80G renewals without us having to worry.",
+    "The best Chartered Accountants for e-commerce sellers. They understand the nuances of TCS, GST on marketplaces, and inventory accounting perfectly.",
+    "We outsourced our entire accounts department to them, and it was the best business decision. Flawless bookkeeping and timely MIS reports.",
+    "Their expertise in handling scrutiny notices under Section 143(3) is highly commendable. Very professional representation before the AO.",
+    "I appreciate their proactive approach. They always inform us about upcoming MCA and Income Tax due dates well in advance.",
+    "Excellent consultation on drafting partnership deeds and LLP agreements. They ensure all legal and tax angles are perfectly covered.",
+    "M J Thacker & Co made our startup funding process smooth by handling the due diligence and valuation reports highly professionally.",
+    "Very friendly staff and partners. They always pick up the phone and give sound financial advice whenever I face a business dilemma.",
+    "They provide excellent tax planning for NRIs. Handled my property sale in India and the subsequent repatriation of funds effortlessly.",
+    "Highly skilled in forensic accounting. Their deep dive into our financial records provided absolute clarity to the board of directors.",
+    "Best CA firm in the area for GST annual returns (GSTR-9 and 9C). Their reconciliation process is highly accurate and systematic.",
+    "We engaged them for a concurrent audit of our branch, and their reporting was crisp, timely, and highly value-adding.",
+    "Very diligent with TDS return filings and issuing Form 16s. We have never faced a late fee penalty since we hired them.",
+    "They provide a complete 360-degree financial solution. From personal ITR to corporate tax strategy, M J Thacker & Co is the best.",
+    "Outstanding service for obtaining lower deduction certificates. The team followed up with the department relentlessly to get it done.",
+    "Their knowledge of the latest GST circulars and notifications is unmatched. They always keep their clients updated on regulatory changes.",
+    "We highly value their advisory on succession planning and drafting of wills from a taxation perspective. Highly sensitive and professional.",
+    "They conducted a thorough GST health check for our factory. The insights helped us claim missed input tax credits efficiently.",
+    "M J Thacker & Co is the perfect partner for foreign subsidiaries in India. They handle our complete compliance calendar flawlessly.",
+    "Very reliable team for drafting replies to GST show-cause notices. Their interpretation of the law is brilliant.",
+    "They helped us transition to a new ERP system seamlessly, ensuring all accounting and tax mapping was done correctly from day one.",
+    "Excellent CA firm for medical professionals. They handle the accounting, equipment depreciation, and tax planning for my clinic perfectly.",
+    "Prompt service for obtaining net worth certificates for visa purposes. The documentation was prepared exactly as required by the embassy.",
+    "Their support during our bank loan syndication was invaluable. They prepared the CMA data and project reports very professionally.",
+    "Highly competent in handling EPF and ESIC assessments. They ensured all our past records were perfectly aligned with the department.",
+    "A very ethical and straightforward CA practice. They give you the right advice, even if it's not what you want to hear. Highly respected.",
+    "They manage the financial compliances of our housing society perfectly. From billing to audit, everything is transparent and timely.",
+    "M J Thacker & Co provides excellent advisory on trademark and intellectual property valuation. A very niche and highly required skill.",
+    "Their team is very quick with generating UDINs and signing off on urgent certificates required for government tenders.",
+    "We rely on them for all our export-related GST refunds. The money is always credited to our account without any department delays.",
+    "Great advisory on the implications of the new tax regime versus the old tax regime. Saved me a significant amount in my salary taxes.",
+    "They successfully represented us at the CIT(Appeals) level. Their drafting of the grounds of appeal was legally very sound.",
+    "Very structured approach to physical inventory verification during audits. Their team works efficiently without disrupting our daily operations.",
+    "Highly recommended for drafting robust vendor agreements and ensuring TDS clauses are appropriately captured.",
+    "The partners are extremely approachable. You can discuss high-level financial strategy with them, and they always add great value.",
+    "They helped us set up our accounting processes from scratch. Highly methodical and very patient with training our in-house team.",
+    "Excellent service regarding the winding up and strike-off of dormant companies. They handled the entire MCA process smoothly.",
+    "Their knowledge of RERA compliances for builders and developers is excellent. They manage our project-wise accounting perfectly.",
+    "M J Thacker & Co is highly proficient in handling faceless assessments. Their online submissions and document uploads are very precise.",
+    "They offer great advice on structuring director remuneration to optimize corporate and personal taxes simultaneously.",
+    "Very dependable CA firm for conducting physical fixed asset verification and tagging. The reporting format provided was excellent.",
+    "We use their services for our monthly stock audits. The team is very thorough and identifies discrepancies immediately.",
+    "Excellent guidance on SEZ and STPI compliances. They understand the specific tax holidays and reporting requirements for exporters.",
+    "They provide great advisory on the tax implications of employee ESOPs. Very clear and concise explanations for our staff.",
+    "Highly proactive in identifying tax-saving investments before the financial year ends. M J Thacker & Co truly looks out for their clients.",
+    "Their expertise in drafting management representation letters and audit committee presentations is of Big-4 quality.",
+    "We engaged them for financial due diligence before an acquisition. Their report was highly detailed and highlighted key financial risks.",
+    "Excellent CA firm for freelancers and gig workers. They simplified my income and expense tracking and filed my ITR on time.",
+    "They provide great support for applying for Import Export Codes (IEC) and AD Code registrations with customs.",
+    "Very systematic handling of GST LUT renewals. We never face any disruption in our zero-rated export supplies thanks to them.",
+    "The team at M J Thacker & Co is very proficient with Tally Prime and Zoho Books. They automated our entire billing cycle.",
+    "Excellent advisory on the taxation of digital assets and cryptocurrencies. They are truly keeping up with the modern economy.",
+    "They managed our shift from a proprietorship to a Private Limited company seamlessly. All assets and liabilities were transferred perfectly.",
+    "Highly recommended for managing the compliances of educational institutions. They understand the specific exemptions available.",
+    "Very prompt in replying to emails and queries. You never have to follow up twice with the team at M J Thacker & Co.",
+    "They provided an excellent valuation report for issuing fresh equity shares. The methodology used was very robust and defensible.",
+    "Great advisory on the applicability of Professional Tax and Labour Welfare Fund across different states for our branch offices.",
+    "M J Thacker & Co handled our application for a micro-finance license perfectly. The RBI documentation was prepared flawlessly.",
+    "They offer excellent retainer services. Having them on board is like having an entire finance department at a fraction of the cost.",
+    "Very professional approach to conducting mystery audits for our retail chain. Their reports helped improve our store operations significantly.",
+    "Highly skilled in handling GST cross-charge and ISD distribution for companies with multi-state registrations.",
+    "Excellent CA firm for restaurants and hospitality businesses. They understand the nuances of food-costing and GST input restrictions.",
+    "Their advisory on the implications of the Benami Transactions Act saved us from making a critical error in real estate purchasing.",
+    "M J Thacker & Co is a pillar of trust and excellence. I cannot imagine running my business without their financial guidance."
   ];
 
-  // Pick a random review on load
   window.onload = function() {
     const randomIndex = Math.floor(Math.random() * reviews.length);
     document.getElementById('reviewText').value = reviews[randomIndex];
   };
 
-  function copyAndRedirect() {
+  function copyAndShowInstructions() {
     const textArea = document.getElementById('reviewText');
     
-    // Copy to clipboard
     navigator.clipboard.writeText(textArea.value).then(() => {
-      // Show toast
-      const toast = document.getElementById('toast');
-      toast.className = "show";
-      
-      // Redirect after a short delay
-      setTimeout(function(){
-        toast.className = toast.className.replace("show", "");
-        window.location.href = "https://g.page/r/CXOGhxKd9cEqEAE/review";
-      }, 2000);
+      document.getElementById('mainView').style.display = 'none';
+      const modal = document.getElementById('instructionModal');
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.style.opacity = '1';
+      }, 50);
     }).catch(err => {
-      console.error('Failed to copy text: ', err);
-      // Fallback redirect if clipboard fails
-      window.location.href = "https://g.page/r/CXOGhxKd9cEqEAE/review";
+      alert('Please copy the text manually before proceeding.');
     });
+  }
+
+  function openGoogle() {
+    window.location.href = "https://g.page/r/CXOGhxKd9cEqEAE/review";
   }
 </script>
 
